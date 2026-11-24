@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
-import { OrderModule } from './module/order.module.js';
 import { AuthModule } from './security/module/auth.module.js';
-import { UsersModule } from './security/User/module/users.module.js';
+import { UsersModule } from './order-api/module/users.module.js';
 import { AuthenticationModule } from '@nestjs/authentication';
+import { OrderModule } from './order-api/module/order.module.js';
 
 @Module({
   imports: [

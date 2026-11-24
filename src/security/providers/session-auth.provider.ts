@@ -1,8 +1,8 @@
 
 import { Injectable } from '@nestjs/common';
 import { AuthenticationRegistry, SessionCookieProvider, type SessionRecord } from '@nestjs/authentication';
-import { User } from '../User/entity/User.js';
-import { UserService } from '../User/entity/application/UserService.js';
+import { User } from '../../order-api/entity/user/User.js';
+import { UserService } from '../../order-api/application/user/UserService.js';
 
 @Injectable()
 export class SessionAuth extends SessionCookieProvider<User> {
@@ -21,3 +21,4 @@ export class SessionAuth extends SessionCookieProvider<User> {
     return this.UserService.findById(session.userId);
   }
 }
+

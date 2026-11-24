@@ -1,8 +1,8 @@
 
 import { Module } from '@nestjs/common';
-import { InMemoryUserRepository } from '../percistence/inMemoryUserRepository.adapter.js';
-import { UserRepository } from '../entity/application/port/UserRepository.port.js';
-import { UserService } from '../entity/application/UserService.js';
+import { UserRepository } from '../application/user/port/UserRepository.port.js';
+import { UserService } from '../application/user/UserService.js';
+import { InMemoryUserRepository } from '../adapter/persistence/in-memory/user/inMemoryUserRepository.adapter.js';
 
 @Module({
     providers: [{

@@ -1,8 +1,8 @@
 
 import { randomUUID } from 'node:crypto';
 import { Injectable } from '@nestjs/common';
-import { User } from '../entity/User.js';
-import { UserRepository } from '../entity/application/port/UserRepository.port.js';
+import { User } from '../../../../entity/user/User.js';
+import { UserRepository } from '../../../../application/user/port/UserRepository.port.js';
 
 interface UserRow extends User {
   passwordHash: string | null;

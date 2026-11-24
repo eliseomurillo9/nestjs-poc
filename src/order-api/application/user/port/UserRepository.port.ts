@@ -1,4 +1,5 @@
-import { User } from "../../User.js";
+import { User } from "../../../entity/user/User.js";
+
 
 export interface UserRepository {
     create(email: string, options:{ passwordHash?: string | null; emailVerified?: boolean }): Promise<User>;
