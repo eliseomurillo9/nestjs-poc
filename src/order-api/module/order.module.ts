@@ -3,6 +3,8 @@ import { OrdersController } from '../adapter/rest/order/controller/Order.js';
 import { OrderRepository } from '../application/order/port/order.repository.port.js';
 import { OrderRepositoryInMemory } from '../adapter/persistence/in-memory/order/orderRepositoryInMemory.adapter.js';
 import { OrderService } from '../application/order/use-case/orderService.js';
+import { AuthenticationProvider } from '../../security/providers/session-auth.provider.js';
+import { JwtAuthGuard } from '../../security/guard/jwtGuard.js';
 
 const orderRepositoryProvider = {
     provide: "ORDER_REPOSITORY",
@@ -17,6 +19,6 @@ const orderServiceProvider = {
 
 @Module({
     controllers: [OrdersController],
-    providers: [orderRepositoryProvider, orderServiceProvider],
+    providers: [orderRepositoryProvider, orderServiceProvider]
 })
 export class OrderModule {}

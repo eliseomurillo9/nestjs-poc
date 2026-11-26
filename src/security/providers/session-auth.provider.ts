@@ -1,24 +1,32 @@
 
 import { Injectable } from '@nestjs/common';
-import { AuthenticationRegistry, SessionCookieProvider, type SessionRecord } from '@nestjs/authentication';
-import { User } from '../../order-api/entity/user/User.js';
-import { UserService } from '../../order-api/application/user/UserService.js';
+import { createRemoteJWKSet, jwtVerify } from 'jose';
 
 @Injectable()
-export class SessionAuth extends SessionCookieProvider<User> {
-  constructor(
-    private readonly UserService: UserService,
-    registry: AuthenticationRegistry,
-  ) {
-    super();
-    // Adds this provider to the chain the guard runs for every request.
-    registry.registerProvider(this);
-  }
+export class AuthenticationProvider {
 
-  // Called for every request with a live session cookie.
-  // Returning null (the user was deleted) ends the session.
-  validate(session: SessionRecord) {
-    return this.UserService.findById(session.userId);
+  async jwtVerify(token: string) {
+    const ENV = process.env
+    const DOMAIN = ENV.AUTH_DOMAIN;
+    const JWKS = createRemoteJWKSet(
+      new URL(
+        `${DOMAIN}.well-known/jwks.json`
+      ),
+    );
+
+    try {
+      const { payload } = await jwtVerify(token, JWKS, {
+        issuer: `${DOMAIN}`,
+        audience: ENV.AUTH_AUDIENCE,
+        algorithms: ['RS256'],
+      });
+
+      return payload;
+    } catch (err) {
+      console.error('JWT verification failed:', err);
+      throw new Error('JWT verification failed');
+    }
+
   }
 }
 

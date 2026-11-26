@@ -8,19 +8,19 @@ import {
   Get,
   Param,
 } from '@nestjs/common';
-import { JwtAuthGuard } from '../../guard/jwtGuard.js';
-import { RolesGuard } from '../../guard/rolesGuard.js';
 import { CreateOrderDto } from '../dto/CreateOrderDto.js';
 import { OrderService } from '../../../../application/order/use-case/orderService.js';
+import { Scope } from '../../../../../security/decorators/scopes.decorator.js';
+import { SCOPES } from '../../../../../security/scopes.js';
 
 @Controller('orders')
-// @UseGuards(JwtAuthGuard, RolesGuard)
 export class OrdersController {
   constructor(
     private readonly orderService: OrderService,
   ) { }
 
   @Get()
+  @Scope([SCOPES.READ])
   async getOrders(
   ) {
 
@@ -28,6 +28,7 @@ export class OrdersController {
   }
 
   @Get(':orderId')
+  @Scope([SCOPES.READ])
   async getOrderById(
     @Param('orderId') orderId: string
   ) {
@@ -35,6 +36,7 @@ export class OrdersController {
   }
 
   @Post()
+  @Scope([SCOPES.WRITE])
   async createOrder(
     @Body() createOrder: CreateOrderDto,
   ) {

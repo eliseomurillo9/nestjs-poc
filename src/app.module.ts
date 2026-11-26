@@ -3,22 +3,33 @@ import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { AuthModule } from './security/module/auth.module.js';
 import { UsersModule } from './order-api/module/users.module.js';
-import { AuthenticationModule } from '@nestjs/authentication';
 import { OrderModule } from './order-api/module/order.module.js';
+import { APP_GUARD } from '@nestjs/core';
+import { ConfigModule } from '@nestjs/config';
+import { JwtAuthGuard } from './security/guard/jwtGuard.js';
+import { RolesGuard } from './security/guard/rolesGuard.js';
+import { validate } from './config/validator.js';
 
 @Module({
   imports: [
     OrderModule,
-    AuthenticationModule.forRoot({
-      session: {
-        absoluteTtl: '14d', // signed out after 14 days, however active
-        idleTtl: '3d', // or after 3 days without a request
-      },
-    }),
     UsersModule,
     AuthModule,
+     ConfigModule.forRoot({
+       validate,
+    })
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard
+    }
+  ],
 })
 export class AppModule { }
