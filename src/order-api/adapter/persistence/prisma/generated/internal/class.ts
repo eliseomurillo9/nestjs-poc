@@ -20,7 +20,7 @@ const config: runtime.GetPrismaClientConfig = {
   "clientVersion": "7.10.1",
   "engineVersion": "d1b3f377ca835d73fd50954a5e22128b9ebdd6b8",
   "activeProvider": "postgresql",
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Get a free hosted Postgres database in seconds: `npx create-db`\n\ngenerator client {\n  provider = \"prisma-client\"\n  output   = \"./generated\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nmodel order {\n  id        Int      @id @default(autoincrement())\n  userId    Int\n  productId Int\n  quantity  Int\n  createdAt DateTime @default(now())\n  updatedAt DateTime @default(now())\n}\n",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Get a free hosted Postgres database in seconds: `npx create-db`\n\ngenerator client {\n  provider = \"prisma-client\"\n  output   = \"./generated\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nmodel OrderItem {\n  id       Int @id\n  orderId  Int\n  quantity Int\n\n  order Order @relation(fields: [orderId], references: [id])\n\n  @@index([orderId])\n}\n\nmodel Order {\n  id        Int         @id @default(autoincrement())\n  userId    Int\n  items     OrderItem[]\n  createdAt DateTime    @default(now())\n  updatedAt DateTime    @default(now())\n}\n",
   "runtimeDataModel": {
     "models": {},
     "enums": {},
@@ -32,10 +32,10 @@ const config: runtime.GetPrismaClientConfig = {
   }
 }
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"order\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"productId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"quantity\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null,\"schema\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"OrderItem\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"orderId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"quantity\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"order\",\"kind\":\"object\",\"type\":\"Order\",\"relationName\":\"OrderToOrderItem\"}],\"dbName\":null,\"schema\":null},\"Order\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"items\",\"kind\":\"object\",\"type\":\"OrderItem\",\"relationName\":\"OrderToOrderItem\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null,\"schema\":null}},\"enums\":{},\"types\":{}}")
 config.parameterizationSchema = {
-  strings: JSON.parse("[\"where\",\"order.findUnique\",\"order.findUniqueOrThrow\",\"orderBy\",\"cursor\",\"order.findFirst\",\"order.findFirstOrThrow\",\"order.findMany\",\"data\",\"order.createOne\",\"order.createMany\",\"order.createManyAndReturn\",\"order.updateOne\",\"order.updateMany\",\"order.updateManyAndReturn\",\"create\",\"update\",\"order.upsertOne\",\"order.deleteOne\",\"order.deleteMany\",\"having\",\"_count\",\"_avg\",\"_sum\",\"_min\",\"_max\",\"order.groupBy\",\"order.aggregate\",\"AND\",\"OR\",\"NOT\",\"id\",\"userId\",\"productId\",\"quantity\",\"createdAt\",\"updatedAt\",\"equals\",\"in\",\"notIn\",\"lt\",\"lte\",\"gt\",\"gte\",\"not\",\"set\",\"increment\",\"decrement\",\"multiply\",\"divide\"]"),
-  graph: "KwsQCRwAACIAMB0AAAQAEB4AACIAMB8CAAAAASACACMAISECACMAISICACMAISNAACQAISRAACQAIQEAAAABACABAAAAAQAgCRwAACIAMB0AAAQAEB4AACIAMB8CACMAISACACMAISECACMAISICACMAISNAACQAISRAACQAIQADAAAABAAgAwAABQAwBAAAAQAgAwAAAAQAIAMAAAUAMAQAAAEAIAMAAAAEACADAAAFADAEAAABACAGHwIAAAABIAIAAAABIQIAAAABIgIAAAABI0AAAAABJEAAAAABAQgAAAkAIAYfAgAAAAEgAgAAAAEhAgAAAAEiAgAAAAEjQAAAAAEkQAAAAAEBCAAACwAwAQgAAAsAMAYfAgAqACEgAgAqACEhAgAqACEiAgAqACEjQAArACEkQAArACECAAAAAQAgCAAADgAgBh8CACoAISACACoAISECACoAISICACoAISNAACsAISRAACsAIQIAAAAEACAIAAAQACACAAAABAAgCAAAEAAgAwAAAAEAIA8AAAkAIBAAAA4AIAEAAAABACABAAAABAAgBRUAACUAIBYAACYAIBcAACkAIBgAACgAIBkAACcAIAkcAAAaADAdAAAXABAeAAAaADAfAgAbACEgAgAbACEhAgAbACEiAgAbACEjQAAcACEkQAAcACEDAAAABAAgAwAAFgAwFAAAFwAgAwAAAAQAIAMAAAUAMAQAAAEAIAkcAAAaADAdAAAXABAeAAAaADAfAgAbACEgAgAbACEhAgAbACEiAgAbACEjQAAcACEkQAAcACENFQAAHgAgFgAAIQAgFwAAHgAgGAAAHgAgGQAAHgAgJQIAAAABJgIAAAAEJwIAAAAEKAIAAAABKQIAAAABKgIAAAABKwIAAAABLAIAIAAhCxUAAB4AIBgAAB8AIBkAAB8AICVAAAAAASZAAAAABCdAAAAABChAAAAAASlAAAAAASpAAAAAAStAAAAAASxAAB0AIQsVAAAeACAYAAAfACAZAAAfACAlQAAAAAEmQAAAAAQnQAAAAAQoQAAAAAEpQAAAAAEqQAAAAAErQAAAAAEsQAAdACEIJQIAAAABJgIAAAAEJwIAAAAEKAIAAAABKQIAAAABKgIAAAABKwIAAAABLAIAHgAhCCVAAAAAASZAAAAABCdAAAAABChAAAAAASlAAAAAASpAAAAAAStAAAAAASxAAB8AIQ0VAAAeACAWAAAhACAXAAAeACAYAAAeACAZAAAeACAlAgAAAAEmAgAAAAQnAgAAAAQoAgAAAAEpAgAAAAEqAgAAAAErAgAAAAEsAgAgACEIJQgAAAABJggAAAAEJwgAAAAEKAgAAAABKQgAAAABKggAAAABKwgAAAABLAgAIQAhCRwAACIAMB0AAAQAEB4AACIAMB8CACMAISACACMAISECACMAISICACMAISNAACQAISRAACQAIQglAgAAAAEmAgAAAAQnAgAAAAQoAgAAAAEpAgAAAAEqAgAAAAErAgAAAAEsAgAeACEIJUAAAAABJkAAAAAEJ0AAAAAEKEAAAAABKUAAAAABKkAAAAABK0AAAAABLEAAHwAhAAAAAAAFLQIAAAABLgIAAAABLwIAAAABMAIAAAABMQIAAAABAS1AAAAAAQAAAAAFFQAGFgAHFwAIGAAJGQAKAAAAAAAFFQAGFgAHFwAIGAAJGQAKAQIBAgMBBQYBBgcBBwgBCQoBCgwCCw0DDA8BDRECDhIEERMBEhQBExUCGhgFGxkL"
+  strings: JSON.parse("[\"where\",\"orderBy\",\"cursor\",\"items\",\"_count\",\"order\",\"OrderItem.findUnique\",\"OrderItem.findUniqueOrThrow\",\"OrderItem.findFirst\",\"OrderItem.findFirstOrThrow\",\"OrderItem.findMany\",\"data\",\"OrderItem.createOne\",\"OrderItem.createMany\",\"OrderItem.createManyAndReturn\",\"OrderItem.updateOne\",\"OrderItem.updateMany\",\"OrderItem.updateManyAndReturn\",\"create\",\"update\",\"OrderItem.upsertOne\",\"OrderItem.deleteOne\",\"OrderItem.deleteMany\",\"having\",\"_avg\",\"_sum\",\"_min\",\"_max\",\"OrderItem.groupBy\",\"OrderItem.aggregate\",\"Order.findUnique\",\"Order.findUniqueOrThrow\",\"Order.findFirst\",\"Order.findFirstOrThrow\",\"Order.findMany\",\"Order.createOne\",\"Order.createMany\",\"Order.createManyAndReturn\",\"Order.updateOne\",\"Order.updateMany\",\"Order.updateManyAndReturn\",\"Order.upsertOne\",\"Order.deleteOne\",\"Order.deleteMany\",\"Order.groupBy\",\"Order.aggregate\",\"AND\",\"OR\",\"NOT\",\"id\",\"userId\",\"createdAt\",\"updatedAt\",\"equals\",\"in\",\"notIn\",\"lt\",\"lte\",\"gt\",\"gte\",\"not\",\"every\",\"some\",\"none\",\"orderId\",\"quantity\",\"is\",\"isNot\",\"connectOrCreate\",\"upsert\",\"createMany\",\"set\",\"disconnect\",\"delete\",\"connect\",\"updateMany\",\"deleteMany\",\"increment\",\"decrement\",\"multiply\",\"divide\"]"),
+  graph: "ZxYgBwUAAEMAIC4AAEIAMC8AAAMAEDAAAEIAMDECAAAAAUACAD4AIUECAD4AIQEAAAABACAHBQAAQwAgLgAAQgAwLwAAAwAQMAAAQgAwMQIAPgAhQAIAPgAhQQIAPgAhAQUAAGEAIAMAAAADACABAAAEADACAAABACABAAAAAwAgAQAAAAEAIAMAAAADACABAAAEADACAAABACADAAAAAwAgAQAABAAwAgAAAQAgAwAAAAMAIAEAAAQAMAIAAAEAIAQFAABgACAxAgAAAAFAAgAAAAFBAgAAAAEBCwAACwAgAzECAAAAAUACAAAAAUECAAAAAQELAAANADABCwAADQAwBAUAAF8AIDECAEkAIUACAEkAIUECAEkAIQIAAAABACALAAAQACADMQIASQAhQAIASQAhQQIASQAhAgAAAAMAIAsAABIAIAIAAAADACALAAASACADAAAAAQAgEgAACwAgEwAAEAAgAQAAAAEAIAEAAAADACAFBAAAWgAgGAAAWwAgGQAAXgAgGgAAXQAgGwAAXAAgBi4AAEEAMC8AABkAEDAAAEEAMDECADYAIUACADYAIUECADYAIQMAAAADACABAAAYADAXAAAZACADAAAAAwAgAQAABAAwAgAAAQAgCAMAAEAAIC4AAD0AMC8AAB8AEDAAAD0AMDECAAAAATICAD4AITNAAD8AITRAAD8AIQEAAAAcACABAAAAHAAgCAMAAEAAIC4AAD0AMC8AAB8AEDAAAD0AMDECAD4AITICAD4AITNAAD8AITRAAD8AIQEDAABZACADAAAAHwAgAQAAIAAwAgAAHAAgAwAAAB8AIAEAACAAMAIAABwAIAMAAAAfACABAAAgADACAAAcACAFAwAAWAAgMQIAAAABMgIAAAABM0AAAAABNEAAAAABAQsAACQAIAQxAgAAAAEyAgAAAAEzQAAAAAE0QAAAAAEBCwAAJgAwAQsAACYAMAUDAABLACAxAgBJACEyAgBJACEzQABKACE0QABKACECAAAAHAAgCwAAKQAgBDECAEkAITICAEkAITNAAEoAITRAAEoAIQIAAAAfACALAAArACACAAAAHwAgCwAAKwAgAwAAABwAIBIAACQAIBMAACkAIAEAAAAcACABAAAAHwAgBQQAAEQAIBgAAEUAIBkAAEgAIBoAAEcAIBsAAEYAIAcuAAA1ADAvAAAyABAwAAA1ADAxAgA2ACEyAgA2ACEzQAA3ACE0QAA3ACEDAAAAHwAgAQAAMQAwFwAAMgAgAwAAAB8AIAEAACAAMAIAABwAIAcuAAA1ADAvAAAyABAwAAA1ADAxAgA2ACEyAgA2ACEzQAA3ACE0QAA3ACENBAAAOQAgGAAAPAAgGQAAOQAgGgAAOQAgGwAAOQAgNQIAAAABNgIAAAAENwIAAAAEOAIAAAABOQIAAAABOgIAAAABOwIAAAABPAIAOwAhCwQAADkAIBoAADoAIBsAADoAIDVAAAAAATZAAAAABDdAAAAABDhAAAAAATlAAAAAATpAAAAAATtAAAAAATxAADgAIQsEAAA5ACAaAAA6ACAbAAA6ACA1QAAAAAE2QAAAAAQ3QAAAAAQ4QAAAAAE5QAAAAAE6QAAAAAE7QAAAAAE8QAA4ACEINQIAAAABNgIAAAAENwIAAAAEOAIAAAABOQIAAAABOgIAAAABOwIAAAABPAIAOQAhCDVAAAAAATZAAAAABDdAAAAABDhAAAAAATlAAAAAATpAAAAAATtAAAAAATxAADoAIQ0EAAA5ACAYAAA8ACAZAAA5ACAaAAA5ACAbAAA5ACA1AgAAAAE2AgAAAAQ3AgAAAAQ4AgAAAAE5AgAAAAE6AgAAAAE7AgAAAAE8AgA7ACEINQgAAAABNggAAAAENwgAAAAEOAgAAAABOQgAAAABOggAAAABOwgAAAABPAgAPAAhCAMAAEAAIC4AAD0AMC8AAB8AEDAAAD0AMDECAD4AITICAD4AITNAAD8AITRAAD8AIQg1AgAAAAE2AgAAAAQ3AgAAAAQ4AgAAAAE5AgAAAAE6AgAAAAE7AgAAAAE8AgA5ACEINUAAAAABNkAAAAAEN0AAAAAEOEAAAAABOUAAAAABOkAAAAABO0AAAAABPEAAOgAhAz0AAAMAID4AAAMAID8AAAMAIAYuAABBADAvAAAZABAwAABBADAxAgA2ACFAAgA2ACFBAgA2ACEHBQAAQwAgLgAAQgAwLwAAAwAQMAAAQgAwMQIAPgAhQAIAPgAhQQIAPgAhCgMAAEAAIC4AAD0AMC8AAB8AEDAAAD0AMDECAD4AITICAD4AITNAAD8AITRAAD8AIUIAAB8AIEMAAB8AIAAAAAAABUcCAAAAAU0CAAAAAU4CAAAAAU8CAAAAAVACAAAAAQFHQAAAAAELEgAATAAwEwAAUQAwRAAATQAwRQAATgAwRgAATwAgRwAAUAAwSAAAUAAwSQAAUAAwSgAAUAAwSwAAUgAwTAAAUwAwAjECAAAAAUECAAAAAQIAAAABACASAABXACADAAAAAQAgEgAAVwAgEwAAVgAgAQsAAGcAMAcFAABDACAuAABCADAvAAADABAwAABCADAxAgAAAAFAAgA-ACFBAgA-ACECAAAAAQAgCwAAVgAgAgAAAFQAIAsAAFUAIAYuAABTADAvAABUABAwAABTADAxAgA-ACFAAgA-ACFBAgA-ACEGLgAAUwAwLwAAVAAQMAAAUwAwMQIAPgAhQAIAPgAhQQIAPgAhAjECAEkAIUECAEkAIQIxAgBJACFBAgBJACECMQIAAAABQQIAAAABBBIAAEwAMEQAAE0AMEYAAE8AIEoAAFAAMAAAAAAAAAUSAABiACATAABlACBEAABjACBFAABkACBKAAAcACADEgAAYgAgRAAAYwAgSgAAHAAgAQMAAFkAIAQxAgAAAAEyAgAAAAEzQAAAAAE0QAAAAAECAAAAHAAgEgAAYgAgAwAAAB8AIBIAAGIAIBMAAGYAIAYAAAAfACALAABmACAxAgBJACEyAgBJACEzQABKACE0QABKACEEMQIASQAhMgIASQAhM0AASgAhNEAASgAhAjECAAAAAUECAAAAAQEFAAICAwUBBAADAQMGAAABBQACAQUAAgUEAAgYAAkZAAoaAAsbAAwAAAAAAAUEAAgYAAkZAAoaAAsbAAwAAAUEABEYABIZABMaABQbABUAAAAAAAUEABEYABIZABMaABQbABUGAgEHBwEICAEJCQEKCgEMDAENDgQODwUPEQEQEwQRFAYUFQEVFgEWFwQcGgcdGw0eHQIfHgIgIQIhIgIiIwIjJQIkJwQlKA4mKgInLAQoLQ8pLgIqLwIrMAQsMxAtNBY"
 }
 
 async function decodeBase64AsWasm(wasmBase64: string): Promise<WebAssembly.Module> {
@@ -70,8 +70,8 @@ export interface PrismaClientConstructor {
    * const prisma = new PrismaClient({
    *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
    * })
-   * // Fetch zero or more Orders
-   * const orders = await prisma.order.findMany()
+   * // Fetch zero or more OrderItems
+   * const orderItems = await prisma.orderItem.findMany()
    * ```
    * 
    * Read more in our [docs](https://pris.ly/d/client).
@@ -94,8 +94,8 @@ export interface PrismaClientConstructor {
  * const prisma = new PrismaClient({
  *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
  * })
- * // Fetch zero or more Orders
- * const orders = await prisma.order.findMany()
+ * // Fetch zero or more OrderItems
+ * const orderItems = await prisma.orderItem.findMany()
  * ```
  * 
  * Read more in our [docs](https://pris.ly/d/client).
@@ -189,14 +189,24 @@ export interface PrismaClient<
   }>>
 
       /**
-   * `prisma.order`: Exposes CRUD operations for the **order** model.
+   * `prisma.orderItem`: Exposes CRUD operations for the **OrderItem** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more OrderItems
+    * const orderItems = await prisma.orderItem.findMany()
+    * ```
+    */
+  get orderItem(): Prisma.OrderItemDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.order`: Exposes CRUD operations for the **Order** model.
     * Example usage:
     * ```ts
     * // Fetch zero or more Orders
     * const orders = await prisma.order.findMany()
     * ```
     */
-  get order(): Prisma.orderDelegate<ExtArgs, { omit: OmitOpts }>;
+  get order(): Prisma.OrderDelegate<ExtArgs, { omit: OmitOpts }>;
 }
 
 export function getPrismaClientClass(): PrismaClientConstructor {

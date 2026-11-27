@@ -7,13 +7,20 @@ import { PrismaConfig } from "../config/prismaClient.js";
 export class PostgresRepository implements OrderRepository {
     public constructor(private readonly prisma: PrismaConfig) { }
     findAll(): Promise<Order[]> {
-        return this.prisma.client().order.findMany()
+        return this.prisma.client().order.findMany({
+            include: {
+                items: true
+            }
+        })
     }
 
-    findById(id: number): Promise<Order | null> {
-        const order = this.prisma.client().order.findUnique({
+    async findById(id: number): Promise<Order | null> {
+        const order = await this.prisma.client().order.findUnique({
             where: {
                 id: id
+            },
+            include: {
+                items: true
             }
         })
 
@@ -21,13 +28,21 @@ export class PostgresRepository implements OrderRepository {
             throw new HttpException(`Order with id ${id} not found`, 404);
         }
 
-        return Promise.resolve(order);
+        return order;
     }
 
     async create(order: Order): Promise<Order> {
         try {
             const createdOrder = await this.prisma.client().order.create({
-                data: order
+                data: {
+                    ...order,
+                    items: {
+                        create: order.items
+                    }
+                },
+                include: {
+                    items: true
+                }
             });
             return createdOrder;
         } catch (e) {

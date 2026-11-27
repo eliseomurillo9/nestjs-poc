@@ -1,13 +1,16 @@
+export interface OrderItem {
+    id: number;
+    orderId?: number
+    quantity: number
+}
 export class Order {
     id: number;
     userId: number;
-    productId: number;
-    quantity: number;
+    items: OrderItem[]
 
-    constructor(orderId: number, userId: number, productId: number, quantity: number) {
+    constructor(orderId: number, userId: number, items: OrderItem[]) {
         this.id = orderId;
         this.userId = userId;
-        this.productId = productId;
-        this.quantity = quantity
+        this.items = items;
     }
 }

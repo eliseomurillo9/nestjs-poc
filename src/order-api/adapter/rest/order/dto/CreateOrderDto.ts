@@ -3,17 +3,14 @@ import {
   IsInt,
   Min,
   Max,
+  IsArray,
 } from 'class-validator';
+import { OrderItem } from '../../../../entity/order/order.js';
 
 export class CreateOrderDto {
   @IsInt()
   userId: number;
 
-  @IsInt()
-  productId: number;
-  
-  @IsInt()
-  @Min(1)
-  @Max(100)
-  quantity: number;
+  @IsArray()
+  items: OrderItem[];
 }

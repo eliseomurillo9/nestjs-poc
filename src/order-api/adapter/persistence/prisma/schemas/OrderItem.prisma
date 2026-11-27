@@ -1,0 +1,9 @@
+model OrderItem {
+    id          Int     @id
+    orderId     Int
+    quantity    Int
+
+    order Order @relation(fields: [orderId], references: [id])
+
+    @@index([orderId])
+}

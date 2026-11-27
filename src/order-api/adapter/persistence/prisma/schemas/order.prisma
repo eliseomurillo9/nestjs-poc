@@ -1,8 +1,7 @@
-model order{
+model Order{
     id Int @id @default(autoincrement())
     userId Int
-    productId Int
-    quantity Int
+    items OrderItem[]
     createdAt DateTime @default(now())
     updatedAt DateTime @default(now())
 }
