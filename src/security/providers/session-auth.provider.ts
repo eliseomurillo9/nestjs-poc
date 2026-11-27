@@ -1,6 +1,7 @@
 
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger, UnauthorizedException } from '@nestjs/common';
 import { createRemoteJWKSet, jwtVerify } from 'jose';
+import { JOSEError } from 'jose/errors';
 
 @Injectable()
 export class AuthenticationProvider {
@@ -22,9 +23,22 @@ export class AuthenticationProvider {
       });
 
       return payload;
-    } catch (err) {
-      console.error('JWT verification failed:', err);
-      throw new Error('JWT verification failed');
+    } catch (e) {
+       if (e instanceof JOSEError) {
+        switch (e.code) {
+          case "ERR_JWT_EXPIRED":
+            Logger.error(e.message)
+            throw new UnauthorizedException("Unauthorized: Token is expired");
+          case 'ERR_JWS_INVALID':
+            Logger.error(e.message)
+            throw new UnauthorizedException("Unauthorized: Invalid token")
+          // no default
+        }
+      }
+
+      Logger.error(e);
+      throw new InternalServerErrorException("Error: We got an unexpected error while validating the JWT")
+
     }
 
   }

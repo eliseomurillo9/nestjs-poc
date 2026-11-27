@@ -2,6 +2,7 @@ export interface EnvironmentVariables {
   NODE_ENV: 'development' | 'test' | 'production';
   AUTH_DOMAIN: string
   AUTH_AUDIENCE: string;
+  DATABASE_URL: string
 }
 
 export function validate(
@@ -50,5 +51,6 @@ export function validate(
     NODE_ENV: nodeEnv,
     AUTH_DOMAIN: domain,
     AUTH_AUDIENCE: required('AUTH_AUDIENCE'),
+    DATABASE_URL: required('DATABASE_URL')
   };
 }

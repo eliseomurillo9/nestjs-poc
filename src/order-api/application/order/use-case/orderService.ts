@@ -11,13 +11,11 @@ export class OrderService {
         return this.repository.findAll();
     }
 
-    getOrder(orderId: string): Promise<Order | null> {
+    getOrder(orderId: number): Promise<Order | null> {
         return this.repository.findById(orderId);
     }
 
     createOrder(order: Omit<Order, "id">): Promise<Order | null> {
-        const orderId = uuidv4();
-        const newOrder = Order.build(orderId, order.userId, order.productId, order.quantity);
-        return this.repository.create(newOrder);
+        return this.repository.create(order);
     }
 }

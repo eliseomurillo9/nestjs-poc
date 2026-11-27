@@ -6,15 +6,15 @@ import { Order } from "../../../../entity/order/order.js";
 export class OrderRepositoryInMemory implements OrderRepository {
     private orders: Order[] = [
         {
-            id: "1",
-            userId: "1",
-            productId: "1",
+            id: 1,
+            userId: 1,
+            productId: 1,
             quantity: 1,
         },
         {
-            id: "2",
-            userId: "2",
-            productId: "2",
+            id: 2,
+            userId: 2,
+            productId: 2,
             quantity: 2,
         }
     ];
@@ -22,7 +22,7 @@ export class OrderRepositoryInMemory implements OrderRepository {
         return Promise.resolve(this.orders);
     }
 
-    findById(id: string): Promise<Order | null> {
+    findById(id: number): Promise<Order | null> {
         const order = this.orders.find(order => order.id === id);
 
         if (!order) {

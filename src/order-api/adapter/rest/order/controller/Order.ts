@@ -30,7 +30,7 @@ export class OrdersController {
   @Get(':orderId')
   @Scope([SCOPES.READ])
   async getOrderById(
-    @Param('orderId') orderId: string
+    @Param('orderId') orderId: number
   ) {
     return await this.orderService.getOrder(orderId);
   }

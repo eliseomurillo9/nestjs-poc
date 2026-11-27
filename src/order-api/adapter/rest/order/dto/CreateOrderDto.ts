@@ -1,17 +1,16 @@
 
 import {
-  IsUUID,
   IsInt,
   Min,
   Max,
 } from 'class-validator';
 
 export class CreateOrderDto {
-  @IsUUID()
-  userId: string;
+  @IsInt()
+  userId: number;
 
-  @IsUUID()
-  productId: string;
+  @IsInt()
+  productId: number;
   
   @IsInt()
   @Min(1)

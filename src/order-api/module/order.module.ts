@@ -1,14 +1,13 @@
 import { Module } from '@nestjs/common';
 import { OrdersController } from '../adapter/rest/order/controller/Order.js';
 import { OrderRepository } from '../application/order/port/order.repository.port.js';
-import { OrderRepositoryInMemory } from '../adapter/persistence/in-memory/order/orderRepositoryInMemory.adapter.js';
 import { OrderService } from '../application/order/use-case/orderService.js';
-import { AuthenticationProvider } from '../../security/providers/session-auth.provider.js';
-import { JwtAuthGuard } from '../../security/guard/jwtGuard.js';
+import { PostgresRepository } from '../adapter/persistence/postgres/order/postgresRepository.adapter.js';
+import { PrismaConfig } from '../adapter/persistence/postgres/config/prismaClient.js';
 
 const orderRepositoryProvider = {
     provide: "ORDER_REPOSITORY",
-    useClass: OrderRepositoryInMemory,
+    useClass: PostgresRepository,
 };
 
 const orderServiceProvider = {
@@ -19,6 +18,6 @@ const orderServiceProvider = {
 
 @Module({
     controllers: [OrdersController],
-    providers: [orderRepositoryProvider, orderServiceProvider]
+    providers: [orderRepositoryProvider, orderServiceProvider, PrismaConfig]
 })
 export class OrderModule {}
